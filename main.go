@@ -1,119 +1,65 @@
-package main
+package tic_tac_toe
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"regexp"
+	"tic-tac-toe/bot"
+	c "tic-tac-toe/common"
+	"tic-tac-toe/printer"
 )
 
-type AnalyzeReport struct {
-	weights [3][3]int
-}
-
 func main() {
-	// Create a tic-tac-toe board.
-	board := [][]string{
-		{"", "", ""},
-		{"", "", ""},
-		{"", "", ""},
-	}
+	scanner := bufio.NewScanner(os.Stdin)
+	inputRegexp := regexp.MustCompile("^[0-2],[0-2]$")
+	fmt.Println("*** Tic-tac-toe game ***")
+	fmt.Println("`restart` -- to restart game")
+	fmt.Println("`exit` -- exit game")
 
-	printBoard(board)
-	report := analyzeBoard(board)
-	printReport(report)
-}
+	player := c.Player{Name: "Player", Mark: "X"}
+	ticTacBot := c.Player{Name: "TicTacBot", Mark: "0"}
 
-func analyzeBoard(board [][]string) AnalyzeReport {
-	analyzeReport := AnalyzeReport{}
-	for i := 0; i < len(board); i++ {
-		for j := 0; j < len(board[i]); j++ {
-			weight, err := getPositionWeight(board, i, j)
-			if len(err) > 0 {
-				continue
-			}
-			analyzeReport.weights[i][j] = weight
-		}
-	}
-	return analyzeReport
-}
+	board := initialize(&player, &ticTacBot)
 
-func getPositionWeight(board [][]string, x int, y int) (weight int, err string) {
-	if len(board[x][y]) > 0 {
-		return -1, "Position must be empty!"
-	}
-	// check all columns with x
-	var rowFreeCount int
-	for j := 0; j < len(board); j++ {
-		if len(board[x][j]) != 0 {
+	printer.PrintBoard(board)
+	fmt.Println("Enter position in X,Y-format (ex. 2,3)")
+	var x, y int
+	for scanner.Scan() && scanner.Text() != "exit" {
+		if scanner.Text() == "restart" {
+			board = initialize(&player, &ticTacBot)
+			printer.PrintBoard(board)
 			continue
 		}
-		rowFreeCount++
-	}
-	if rowFreeCount == len(board) {
-		weight++
-	}
-
-	// check all rows with y
-	var columnFreeCount int
-	for i := 0; i < len(board); i++ {
-		if len(board[i][y]) != 0 {
+		xyStr := scanner.Text()
+		if inputIsValid := inputRegexp.Match([]byte(xyStr)); !inputIsValid {
+			fmt.Println("Invalid board position! Only two digits are required")
 			continue
 		}
-		columnFreeCount++
-	}
-	if columnFreeCount == len(board) {
-		weight++
-	}
+		fmt.Println("Enter position in X,Y-format (ex. 2,3)")
 
-	if x == y {
-		var diagonal1FreeCount int
-		for i := 0; i < len(board); i++ {
-			if len(board[i][i]) != 0 {
-				continue
-			}
-			diagonal1FreeCount++
+		position := c.Position{}
+		_, _ = fmt.Sscanf(xyStr, "%d,%d", &position.X, &position.Y)
+		if len(board.Field[x][y]) > 0 {
+			fmt.Println("Invalid board position! Position is already chosen")
+			continue
 		}
-		if diagonal1FreeCount == len(board) {
-			weight++
-		}
-	}
 
-	if len(board) - 1 - x == y {
-		var diagonal2FreeCount int
-		for i := 0; i < len(board); i++ {
-			j := len(board) - 1 - i
-			if len(board[i][j]) != 0 {
-				continue
-			}
-			diagonal2FreeCount++
+		c.Turn(&board, &player, &position)
+		if c.CheckWinCondition(&board, &player) {
+			break
 		}
-		if diagonal2FreeCount == len(board) {
-			weight++
-		}
-	}
 
-	return weight, ""
-}
-
-func printBoard(board [][]string) {
-	for i := 0; i < len(board); i++ {
-		fmt.Print("[")
-		for j := 0; j < len(board[i]); j++ {
-			symbol := board[i][j]
-			if len(symbol) == 0 {
-				symbol = "_"
-			}
-			fmt.Printf(" %s ", symbol)
+		bot.ComputerTurn(&board, &ticTacBot)
+		if c.CheckWinCondition(&board, &ticTacBot) {
+			break
 		}
-		fmt.Print("]\n")
 	}
 }
 
-func printReport(report AnalyzeReport) {
-	fmt.Println("*** Analyze report ***")
-	for i := 0; i < len(report.weights); i++ {
-		fmt.Print("[")
-		for j := 0; j < len(report.weights[i]); j++ {
-			fmt.Printf(" %d ", report.weights[i][j])
-		}
-		fmt.Print("]\n")
-	}
+func initialize(player1 *c.Player, player2 *c.Player) c.Board {
+	board := c.Board{}
+	c.ResetPlayerResult(player1)
+	c.ResetPlayerResult(player2)
+	return board
 }
