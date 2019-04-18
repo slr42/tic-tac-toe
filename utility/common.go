@@ -61,6 +61,18 @@ func CheckWinCondition(board *Board, player *Player) bool {
 	return isWin
 }
 
+func FieldHasFreeCells(board Board) bool {
+	for i:=0; i< len(board.Field); i++ {
+		for j:=0; j< len(board.Field[i]); j++ {
+			if len(board.Field[i][j]) == 0 {
+				return true
+			}
+		}
+	}
+	fmt.Println("No one wins!")
+	return false
+}
+
 func markPosition(board *Board, player *Player, position *Position) {
 	board.Field[position.X][position.Y] = player.Mark
 	player.Result.XCount[position.X]++

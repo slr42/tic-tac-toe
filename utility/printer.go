@@ -19,7 +19,7 @@ func PrintBoard(board Board) {
 }
 
 func PrintReport(report AnalyzeReport) {
-	fmt.Println("*** Analyze report ***")
+	fmt.Println("*** Analyze report. Weights ***")
 	for i := 0; i < len(report.Weights); i++ {
 		fmt.Print("[")
 		for j := 0; j < len(report.Weights[i]); j++ {
@@ -27,6 +27,10 @@ func PrintReport(report AnalyzeReport) {
 		}
 		fmt.Print("]\n")
 	}
+	fmt.Println("*** Analyze report. Attacks ***")
+	fmt.Println(report.Attacks)
+	fmt.Println("*** Analyze report. Defends ***")
+	fmt.Println(report.Defends)
 }
 
 func PrintResult(result Result) {

@@ -10,7 +10,7 @@ import (
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	inputRegexp := regexp.MustCompile("^[1-3],[1-3]$")
+	inputRegexp := regexp.MustCompile("^[0-2],[0-2]$")
 	fmt.Println("*** Tic-tac-toe game ***")
 	fmt.Println("`restart` -- to restart game")
 	fmt.Println("`exit` -- exit game")
@@ -19,12 +19,11 @@ func main() {
 	ticTacBot := Player{Name: "TicTacBot", Mark: "0"}
 
 	board := initialize(&player, &ticTacBot)
-	var position Position
 
 	PrintBoard(board)
 	fmt.Println("Enter position in X,Y-format (ex. 2,3)")
-
-	for scanner.Scan() && scanner.Text() != "exit" && FieldHasFreeCells(board) {
+	var x, y int
+	for scanner.Scan() && scanner.Text() != "exit" {
 		if scanner.Text() == "restart" {
 			board = initialize(&player, &ticTacBot)
 			PrintBoard(board)
@@ -36,11 +35,10 @@ func main() {
 			continue
 		}
 		fmt.Println("Enter position in X,Y-format (ex. 2,3)")
-		position = Position{}
+
+		position := Position{}
 		_, _ = fmt.Sscanf(xyStr, "%d,%d", &position.X, &position.Y)
-		position.X = position.X - 1
-		position.Y = position.Y - 1
-		if len(board.Field[position.X][position.Y]) > 0 {
+		if len(board.Field[x][y]) > 0 {
 			fmt.Println("Invalid board position! Position is already chosen")
 			continue
 		}
@@ -50,13 +48,7 @@ func main() {
 			break
 		}
 
-		if !FieldHasFreeCells(board) {
-			PrintBoard(board)
-			break
-		}
-
 		ComputerTurn(&board, &ticTacBot, &player)
-		PrintBoard(board)
 		if CheckWinCondition(&board, &ticTacBot) {
 			break
 		}
