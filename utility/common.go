@@ -1,4 +1,4 @@
-package common
+package tic_tac_toe
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ type Board struct {
 }
 
 type Player struct {
-	Name string
-	Mark string
-	result Result
+	Name   string
+	Mark   string
+	Result Result
 }
 
 type Position struct {
@@ -26,8 +26,8 @@ type Result struct {
 }
 
 type AnalyzeReport struct {
-	Attacks []*Position
-	Defends []*Position
+	Attacks []Position
+	Defends []Position
 	Weights [3][3]int
 }
 
@@ -36,23 +36,23 @@ func Turn(board *Board, player *Player, position *Position) {
 }
 
 func ResetPlayerResult(player *Player) {
-	player.result = Result{}
+	player.Result = Result{}
 }
 
 func CheckWinCondition(board *Board, player *Player) bool {
 	isWin := false
 	boardSize := len(board.Field)
-	for i := 0; i < len(player.result.XCount); i++ {
-		if player.result.XCount[i] >= boardSize {
+	for i := 0; i < len(player.Result.XCount); i++ {
+		if player.Result.XCount[i] >= boardSize {
 			isWin = true
 		}
 	}
-	for j := 0; j < len(player.result.YCount); j++ {
-		if player.result.YCount[j] >= boardSize {
+	for j := 0; j < len(player.Result.YCount); j++ {
+		if player.Result.YCount[j] >= boardSize {
 			isWin = true
 		}
 	}
-	if player.result.Diagonal1Count >= boardSize || player.result.Diagonal2Count >= boardSize {
+	if player.Result.Diagonal1Count >= boardSize || player.Result.Diagonal2Count >= boardSize {
 		isWin = true
 	}
 	if isWin {
@@ -63,12 +63,12 @@ func CheckWinCondition(board *Board, player *Player) bool {
 
 func markPosition(board *Board, player *Player, position *Position) {
 	board.Field[position.X][position.Y] = player.Mark
-	player.result.XCount[position.X]++
-	player.result.YCount[position.Y]++
+	player.Result.XCount[position.X]++
+	player.Result.YCount[position.Y]++
 	if position.X == position.Y {
-		player.result.Diagonal1Count++
+		player.Result.Diagonal1Count++
 	}
-	if position.X + position.Y == len(board.Field)-1 {
-		player.result.Diagonal2Count++
+	if position.X+position.Y == len(board.Field)-1 {
+		player.Result.Diagonal2Count++
 	}
 }

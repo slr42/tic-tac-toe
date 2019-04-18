@@ -1,13 +1,11 @@
-package tic_tac_toe
+package main
 
 import (
 	"bufio"
 	"fmt"
 	"os"
 	"regexp"
-	"tic-tac-toe/bot"
-	c "tic-tac-toe/common"
-	"tic-tac-toe/printer"
+	. "tic_tac_toe/utility"
 )
 
 func main() {
@@ -17,18 +15,18 @@ func main() {
 	fmt.Println("`restart` -- to restart game")
 	fmt.Println("`exit` -- exit game")
 
-	player := c.Player{Name: "Player", Mark: "X"}
-	ticTacBot := c.Player{Name: "TicTacBot", Mark: "0"}
+	player := Player{Name: "Player", Mark: "X"}
+	ticTacBot := Player{Name: "TicTacBot", Mark: "0"}
 
 	board := initialize(&player, &ticTacBot)
 
-	printer.PrintBoard(board)
+	PrintBoard(board)
 	fmt.Println("Enter position in X,Y-format (ex. 2,3)")
 	var x, y int
 	for scanner.Scan() && scanner.Text() != "exit" {
 		if scanner.Text() == "restart" {
 			board = initialize(&player, &ticTacBot)
-			printer.PrintBoard(board)
+			PrintBoard(board)
 			continue
 		}
 		xyStr := scanner.Text()
@@ -38,28 +36,28 @@ func main() {
 		}
 		fmt.Println("Enter position in X,Y-format (ex. 2,3)")
 
-		position := c.Position{}
+		position := Position{}
 		_, _ = fmt.Sscanf(xyStr, "%d,%d", &position.X, &position.Y)
 		if len(board.Field[x][y]) > 0 {
 			fmt.Println("Invalid board position! Position is already chosen")
 			continue
 		}
 
-		c.Turn(&board, &player, &position)
-		if c.CheckWinCondition(&board, &player) {
+		Turn(&board, &player, &position)
+		if CheckWinCondition(&board, &player) {
 			break
 		}
 
-		bot.ComputerTurn(&board, &ticTacBot)
-		if c.CheckWinCondition(&board, &ticTacBot) {
+		ComputerTurn(&board, &ticTacBot, &player)
+		if CheckWinCondition(&board, &ticTacBot) {
 			break
 		}
 	}
 }
 
-func initialize(player1 *c.Player, player2 *c.Player) c.Board {
-	board := c.Board{}
-	c.ResetPlayerResult(player1)
-	c.ResetPlayerResult(player2)
+func initialize(player1 *Player, player2 *Player) Board {
+	board := Board{}
+	ResetPlayerResult(player1)
+	ResetPlayerResult(player2)
 	return board
 }

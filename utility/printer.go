@@ -1,11 +1,10 @@
-package printer
+package tic_tac_toe
 
 import (
 	"fmt"
-	c "tic-tac-toe/common"
 )
 
-func PrintBoard(board c.Board) {
+func PrintBoard(board Board) {
 	for i := 0; i < len(board.Field); i++ {
 		fmt.Print("[")
 		for j := 0; j < len(board.Field[i]); j++ {
@@ -19,7 +18,7 @@ func PrintBoard(board c.Board) {
 	}
 }
 
-func PrintReport(report c.AnalyzeReport) {
+func PrintReport(report AnalyzeReport) {
 	fmt.Println("*** Analyze report ***")
 	for i := 0; i < len(report.Weights); i++ {
 		fmt.Print("[")
@@ -30,6 +29,6 @@ func PrintReport(report c.AnalyzeReport) {
 	}
 }
 
-func PrintResult(result c.Result) {
+func PrintResult(result Result) {
 	fmt.Println(result)
 }
