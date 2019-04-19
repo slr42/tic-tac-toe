@@ -32,7 +32,7 @@ func main() {
 		}
 		xyStr := scanner.Text()
 		if inputIsValid := inputRegexp.Match([]byte(xyStr)); !inputIsValid {
-			fmt.Println("Invalid board position! Only two digits are required")
+			fmt.Println("Invalid board position! Digits from 1 to 3 are required")
 			continue
 		}
 		fmt.Println("Enter position in X,Y-format (ex. 2,3)")

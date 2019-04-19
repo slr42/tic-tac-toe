@@ -19,18 +19,22 @@ func PrintBoard(board Board) {
 }
 
 func PrintReport(report AnalyzeReport) {
-	fmt.Println("*** Analyze report. Weights ***")
+	/*fmt.Println("*** Analyze report. Weights ***")
 	for i := 0; i < len(report.Weights); i++ {
 		fmt.Print("[")
 		for j := 0; j < len(report.Weights[i]); j++ {
 			fmt.Printf(" %d ", report.Weights[i][j])
 		}
 		fmt.Print("]\n")
-	}
-	fmt.Println("*** Analyze report. Attacks ***")
-	fmt.Println(report.Attacks)
+	}*/
+	fmt.Println("*** Analyze report. WinPositions ***")
+	fmt.Println(report.WinPositions)
 	fmt.Println("*** Analyze report. Defends ***")
 	fmt.Println(report.Defends)
+	fmt.Println("*** Analyze report. Preemptive defends ***")
+	fmt.Println(report.PreemptiveDefends)
+	fmt.Println("*** Analyze report. Attacks ***")
+	fmt.Println(report.Attacks)
 }
 
 func PrintResult(result Result) {

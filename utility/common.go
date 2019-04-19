@@ -26,8 +26,10 @@ type Result struct {
 }
 
 type AnalyzeReport struct {
-	Attacks []Position
+	WinPositions []Position
 	Defends []Position
+	PreemptiveDefends []Position
+	Attacks []Position
 	Weights [3][3]int
 }
 
