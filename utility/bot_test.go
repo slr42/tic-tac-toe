@@ -9,9 +9,9 @@ import (
 
 func TestAnalyzeResult(t *testing.T) {
 	type args struct {
-		board        *Board
-		bot 		 *Player
-		playerResult Result
+		board  *Board
+		bot    *Player
+		player *Player
 	}
 	tests := []struct {
 		name string
@@ -21,9 +21,13 @@ func TestAnalyzeResult(t *testing.T) {
 		{
 			name: "Empty board",
 			args: args{
-				board:        &Board{Field: [3][3]string{{"", "", ""}, {"", "", ""}, {"", "", ""}}},
-				bot:          &Player{Name: "Bot", Mark: "0"},
-				playerResult: Result{XCount: [3]int{}, YCount: [3]int{}, Diagonal1Count: 0, Diagonal2Count: 0},
+				board:  &Board{Field: [3][3]string{{"", "", ""}, {"", "", ""}, {"", "", ""}}},
+				bot:    &Player{Name: "Bot", Mark: "0"},
+				player: &Player{
+					Name: "Player",
+					Mark: "X",
+					Result: Result{XCount: [3]int{}, YCount: [3]int{}, Diagonal1Count: 0, Diagonal2Count: 0},
+				},
 			},
 			want: AnalyzeReport{
 				Attacks: []Position{{X: 1, Y: 1}},
@@ -35,7 +39,11 @@ func TestAnalyzeResult(t *testing.T) {
 			args: args{
 				board:        &Board{Field: [3][3]string{{"X", "0", "X"}, {"X", "0", ""}, {"0", "", ""}}},
 				bot:          &Player{Name: "Bot", Mark: "0"},
-				playerResult: Result{XCount: [3]int{2, 1, 0}, YCount: [3]int{2, 0, 1}, Diagonal1Count: 1, Diagonal2Count: 1},
+				player: &Player{
+					Name: "Player",
+					Mark: "X",
+					Result: Result{XCount: [3]int{2, 1, 0}, YCount: [3]int{2, 0, 1}, Diagonal1Count: 1, Diagonal2Count: 1},
+				},
 			},
 			want: AnalyzeReport{
 				Attacks: []Position{{X: 2, Y: 1}},
@@ -45,7 +53,7 @@ func TestAnalyzeResult(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := AnalyzeResult(tt.args.board, tt.args.bot, tt.args.playerResult)
+			got := AnalyzeResult(tt.args.board, tt.args.bot, tt.args.player)
 			if !reflect.DeepEqual(got.Weights, tt.want.Weights) {
 				t.Errorf("AnalyzeResult().Weights = %v, want %v", got.Weights, tt.want.Weights)
 			}

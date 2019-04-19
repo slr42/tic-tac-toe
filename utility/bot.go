@@ -57,8 +57,9 @@ func ChooseBestPosition(positionList []Position) Position {
 func AnalyzeResult(board *Board, bot *Player, player *Player) AnalyzeReport {
 	var analyzeReport AnalyzeReport
 
-	analyzeReport.Defends = getWinnablePositions(board, player)
-	analyzeReport.WinPositions = getWinnablePositions(board, bot)
+	boardSize := len(board.Field)
+	analyzeReport.Defends = getWinnablePositions(board, player, boardSize - 1)
+	analyzeReport.WinPositions = getWinnablePositions(board, bot, boardSize - 1)
 
 	bestAttackX, bestAttackY, maxWeight := getBestAttack(board, bot)
 	// if there are no win position for bot
@@ -70,13 +71,12 @@ func AnalyzeResult(board *Board, bot *Player, player *Player) AnalyzeReport {
 	return analyzeReport
 }
 
-func getWinnablePositions(board *Board, player *Player) []Position {
+func getWinnablePositions(board *Board, player *Player, markCount int) []Position {
 	boardSize := len(board.Field)
-	winnableCount := boardSize - 1
 
 	var winnablePositionList []Position
 	for i := 0; i < boardSize; i++ {
-		if player.Result.XCount[i] >= winnableCount {
+		if player.Result.XCount[i] >= markCount {
 			// check free space at i-row
 			for j := 0; j < boardSize; j++ {
 				if board.Field[i][j] == "" {
@@ -87,7 +87,7 @@ func getWinnablePositions(board *Board, player *Player) []Position {
 				}
 			}
 		}
-		if player.Result.YCount[i] >= winnableCount {
+		if player.Result.YCount[i] >= markCount {
 			for j := 0; j < boardSize; j++ {
 				if board.Field[j][i] == "" {
 					computerPosition := Position{}
@@ -99,7 +99,7 @@ func getWinnablePositions(board *Board, player *Player) []Position {
 		}
 
 		// check diagonals
-		if player.Result.Diagonal1Count >= winnableCount {
+		if player.Result.Diagonal1Count >= markCount {
 			for i := 0; i < boardSize; i++ {
 				if board.Field[i][i] == "" {
 					computerPosition := Position{}
@@ -109,10 +109,10 @@ func getWinnablePositions(board *Board, player *Player) []Position {
 				}
 			}
 		}
-		if player.Result.Diagonal2Count >= winnableCount {
+		if player.Result.Diagonal2Count >= markCount {
 			for i := 0; i < boardSize; i++ {
 				x := i
-				y := winnableCount - i
+				y := len(board.Field)-1-i
 				if board.Field[x][y] == "" {
 					computerPosition := Position{}
 					computerPosition.X = x
