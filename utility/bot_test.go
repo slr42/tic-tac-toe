@@ -46,19 +46,58 @@ func TestAnalyzeResult(t *testing.T) {
 				},
 			},
 			want: AnalyzeReport{
-				Attacks: []Position{{X: 2, Y: 1}},
+				Attacks: []Position{{2, 1}},
 				Weights: [3][3]int{{0, 1, 0}, {0, 1, 0}, {1, 2, 1}},
+			},
+		},
+		{
+			name: "Anti fork",
+			args: args{
+				board:        &Board{Field: [3][3]string{{"0", "", ""}, {"", "", "X"}, {"X", "", ""}}},
+				bot:          &Player{
+					Name: "Bot",
+					Mark: "0",
+					Result: Result{XCount: [3]int{1, 0, 0}, YCount: [3]int{1, 0, 0}, Diagonal1Count: 1, Diagonal2Count: 0},
+				},
+				player: &Player{
+					Name: "Player",
+					Mark: "X",
+					Result: Result{XCount: [3]int{0, 1, 1}, YCount: [3]int{1, 0, 1}, Diagonal1Count: 0, Diagonal2Count: 1},
+				},
+			},
+			want: AnalyzeReport{
+				Attacks: []Position{{0, 1}},
+				PreemptiveDefends: []Position{{0, 2}},
+			},
+		},
+		{
+			name: "Anti fork 2",
+			args: args{
+				board:        &Board{Field: [3][3]string{{"X", "", ""}, {"", "", ""}, {"", "", ""}}},
+				bot:          &Player{
+					Name: "Bot",
+					Mark: "0",
+					Result: Result{XCount: [3]int{0, 0, 0}, YCount: [3]int{0, 0, 0}, Diagonal1Count: 0, Diagonal2Count: 0},
+				},
+				player: &Player{
+					Name: "Player",
+					Mark: "X",
+					Result: Result{XCount: [3]int{1, 0, 0}, YCount: [3]int{1, 0, 0}, Diagonal1Count: 1, Diagonal2Count: 0},
+				},
+			},
+			want: AnalyzeReport{
+				Attacks: []Position{{0, 2}, {1, 1}},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := AnalyzeResult(tt.args.board, tt.args.bot, tt.args.player)
-			if !reflect.DeepEqual(got.Weights, tt.want.Weights) {
-				t.Errorf("AnalyzeResult().Weights = %v, want %v", got.Weights, tt.want.Weights)
-			}
 			if !reflect.DeepEqual(got.Attacks, tt.want.Attacks) {
 				t.Errorf("AnalyzeResult().Attacks = %v, want %v", got.Attacks, tt.want.Attacks)
+			}
+			if !reflect.DeepEqual(got.PreemptiveDefends, tt.want.PreemptiveDefends) {
+				t.Errorf("AnalyzeResult().PreemptiveDefends = %v, want %v", got.PreemptiveDefends, tt.want.PreemptiveDefends)
 			}
 			if !reflect.DeepEqual(got.Defends, tt.want.Defends) {
 				t.Errorf("AnalyzeResult().Defends = %v, want %v", got.Defends, tt.want.Defends)
@@ -79,7 +118,7 @@ func TestChooseBestPosition(t *testing.T) {
 		{
 			name: "One choice",
 			args: args{
-				positionList: []Position{{X: 1, Y: 1}},
+				positionList: []Position{{1, 1}},
 			},
 			want: Position{X: 1, Y: 1},
 		},

@@ -2,6 +2,7 @@ package tic_tac_toe
 
 import (
 	"fmt"
+	"reflect"
 )
 
 type Board struct {
@@ -85,4 +86,75 @@ func markPosition(board *Board, player *Player, position *Position) {
 	if position.X+position.Y == len(board.Field)-1 {
 		player.Result.Diagonal2Count++
 	}
+}
+
+func positionInPositionList(searchPosition Position, positionList []Position) bool {
+	for _, position := range positionList {
+		if reflect.DeepEqual(position, searchPosition) {
+			return true
+		}
+	}
+	return false
+}
+
+func isRowFree(board *Board, x int, orMark string) bool {
+	var isRowFree = true
+	for _, value := range board.Field[x] {
+		if value != "" && value != orMark {
+			isRowFree = false
+		}
+	}
+	return isRowFree
+}
+
+func isColumnFree(board *Board, y int, orMark string) bool {
+	var isColumnFree = true
+	for i:=0; i<len(board.Field); i++ {
+		if board.Field[i][y] != "" && board.Field[i][y] != orMark {
+			isColumnFree = false
+		}
+	}
+	return isColumnFree
+}
+
+func isDiagonal1Free(board *Board, orMark string) bool {
+	var isDiagonal1Free = true
+	for i:=0; i< len(board.Field); i++ {
+		if board.Field[i][i] != "" && board.Field[i][i] != orMark {
+			isDiagonal1Free = false
+
+		}
+	}
+	return isDiagonal1Free
+}
+
+func isDiagonal2Free(board *Board, orMark string) bool {
+	var isDiagonal2Free = true
+	for i:=0; i< len(board.Field); i++ {
+		j := len(board.Field)-1-i
+		if board.Field[i][j] != "" && board.Field[i][j] != orMark {
+			isDiagonal2Free = false
+
+		}
+	}
+	return isDiagonal2Free
+}
+
+func clonePlayer(player *Player) *Player {
+	clonePlayer := Player{
+		Mark: player.Mark,
+		Name: player.Name,
+		Result: player.Result,
+	}
+	return &clonePlayer
+}
+
+func cloneBoard(board *Board) Board {
+	cloneBoard := Board{}
+	for i, row := range board.Field {
+		for j, value := range row {
+			cloneBoard.Field[i][j] = value
+		}
+	}
+	return cloneBoard
 }
