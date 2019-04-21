@@ -89,6 +89,26 @@ func TestAnalyzeResult(t *testing.T) {
 				Attacks: []Position{{0, 2}, {1, 1}},
 			},
 		},
+		{
+			name: "Defend",
+			args: args{
+				board:        &Board{Field: [3][3]string{{"", "X", "0"}, {"0", "X", "X"}, {"X", "", "0"}}},
+				bot:          &Player{
+					Name: "Bot",
+					Mark: "0",
+					Result: Result{XCount: [3]int{1, 1, 1}, YCount: [3]int{1, 0, 2}, Diagonal1Count: 1, Diagonal2Count: 1},
+				},
+				player: &Player{
+					Name: "Player",
+					Mark: "X",
+					Result: Result{XCount: [3]int{1, 2, 1}, YCount: [3]int{1, 2, 1}, Diagonal1Count: 1, Diagonal2Count: 2},
+				},
+			},
+			want: AnalyzeReport{
+				Defends: []Position{{2, 1}},
+				Attacks: []Position{{0, 0}, {2, 1}},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

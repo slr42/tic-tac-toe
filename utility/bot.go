@@ -166,24 +166,22 @@ func getWinnablePositions(board *Board, player *Player, markCount int) []Positio
 	for i := 0; i < boardSize; i++ {
 		if player.Result.XCount[i] >= markCount {
 			// if row is not free -- skip it
-			if !isRowFree(board, i, player.Mark) {
-				continue
-			}
-			// check free space at i-row
-			for j := 0; j < boardSize; j++ {
-				if board.Field[i][j] == "" {
-					winnablePositionList = append(winnablePositionList, Position{i, j})
+			if isRowFree(board, i, player.Mark) {
+				// check free space at i-row
+				for j := 0; j < boardSize; j++ {
+					if board.Field[i][j] == "" {
+						winnablePositionList = append(winnablePositionList, Position{i, j})
+					}
 				}
 			}
 		}
 		if player.Result.YCount[i] >= markCount {
 			// if column is not free -- skip it
-			if !isColumnFree(board, i, player.Mark) {
-				continue
-			}
-			for j := 0; j < boardSize; j++ {
-				if board.Field[j][i] == "" {
-					winnablePositionList = append(winnablePositionList, Position{j, i})
+			if isColumnFree(board, i, player.Mark) {
+				for j := 0; j < boardSize; j++ {
+					if board.Field[j][i] == "" {
+						winnablePositionList = append(winnablePositionList, Position{j, i})
+					}
 				}
 			}
 		}
