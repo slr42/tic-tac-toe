@@ -59,7 +59,7 @@ func CheckWinCondition(board *Board, player *Player) bool {
 		isWin = true
 	}
 	if isWin {
-		fmt.Println("Player " + player.Mark + " isWin!")
+		fmt.Println(player.Name + " wins!")
 	}
 	return isWin
 }

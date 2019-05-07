@@ -47,6 +47,7 @@ func main() {
 
 		Turn(&board, &player, &position)
 		if CheckWinCondition(&board, &player) {
+			PrintBoard(board)
 			break
 		}
 
@@ -56,10 +57,11 @@ func main() {
 		}
 
 		ComputerTurn(&board, &ticTacBot, &player)
-		PrintBoard(board)
 		if CheckWinCondition(&board, &ticTacBot) {
+			PrintBoard(board)
 			break
 		}
+		PrintBoard(board)
 	}
 }
 

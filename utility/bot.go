@@ -12,13 +12,14 @@ func ComputerTurn(board *Board, bot *Player, player *Player) {
 	PrintReport(analyzeReport)
 
 	var positionList []Position
-	if len(analyzeReport.WinPositions) > 0 {
+	switch {
+	case len(analyzeReport.WinPositions) > 0:
 		positionList = analyzeReport.WinPositions
-	} else if len(analyzeReport.Defends) > 0 {
+	case len(analyzeReport.Defends) > 0:
 		positionList = analyzeReport.Defends
-	} else if len(analyzeReport.PreemptiveDefends) > 0 {
+	case len(analyzeReport.PreemptiveDefends) > 0:
 		positionList = analyzeReport.PreemptiveDefends
-	} else {
+	default:
 		positionList = analyzeReport.Attacks
 	}
 
